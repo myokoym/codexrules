@@ -28,12 +28,14 @@ sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
 
 ### rg
 - 用途: 高速なリポジトリ検索
+- 代替する標準コマンド: `git grep`、`grep`
 - 存在確認: `command -v rg`
 - macOS(Homebrew): `brew install ripgrep`
 - Debian/Ubuntu(apt): `sudo apt-get update && sudo apt-get install -y ripgrep`
 
 ### fd
 - 用途: 高速なファイル探索
+- 代替する標準コマンド: `find`
 - 存在確認: `command -v fd`
 - macOS(Homebrew): `brew install fd`
 - Debian/Ubuntu(apt): `sudo apt-get update && sudo apt-get install -y fd-find`
@@ -41,12 +43,14 @@ sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
 
 ### jq
 - 用途: JSON の整形、抽出、フィルタ
+- 代替する標準コマンド: 明確な単一代替はなく、生 JSON 確認や最小限の別手段で代用
 - 存在確認: `command -v jq`
 - macOS(Homebrew): `brew install jq`
 - Debian/Ubuntu(apt): `sudo apt-get update && sudo apt-get install -y jq`
 
 ### bat
 - 用途: 見やすいファイル閲覧
+- 代替する標準コマンド: `cat`、`sed -n`、`head`、`tail`
 - 存在確認: `command -v bat`
 - macOS(Homebrew): `brew install bat`
 - Debian/Ubuntu(apt): `sudo apt-get update && sudo apt-get install -y bat`
@@ -54,6 +58,7 @@ sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
 
 ### delta
 - 用途: 差分表示の改善
+- 代替する標準コマンド: `git diff`
 - 存在確認: `command -v delta`
 - macOS(Homebrew): `brew install git-delta`
 - Debian/Ubuntu(apt): `sudo apt-get update && sudo apt-get install -y git-delta`
