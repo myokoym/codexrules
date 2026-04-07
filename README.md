@@ -84,7 +84,7 @@ sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
 
 ### delta
 - 用途: 差分表示の改善
-- 代替する標準コマンド: `git diff`
+- 補助する標準コマンド: `git diff`
 - 存在確認: `command -v delta`
 - macOS(Homebrew): `brew install git-delta`
 - Debian/Ubuntu(apt): `sudo apt-get update && sudo apt-get install -y git-delta`
