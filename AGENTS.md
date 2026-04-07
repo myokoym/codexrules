@@ -1,48 +1,19 @@
-# rules リポジトリ運用ルール
+# rules リポジトリ編集ルール
 
-## 役割分担
-- `default.rules` は言語非依存の共通コア専用とする。対象は読み取り、探索、比較、危険操作の明示的な確認に限る。
-- `node.rules`、`ruby.rules` のような追加 rules は言語別拡張として扱う。言語依存コマンドを `default.rules` に混ぜない。
-- rules は「実行許可の定義」を置く場所であり、ツール導入手順や OS ごとのセットアップ手順は `README.md` に置く。
+この `AGENTS.md` は `/home/myokoym/.codex/rules` を編集するときだけ適用する。通常利用時のフォールバック方針は `README.md` にある `~/.codex/AGENTS.md` 追記テンプレートを使う。
 
-## rules 設計方針
-- `pattern` は同種コマンドを目的別ブロックでまとめる。
-- 各 `prefix_rule` に `match` と `not_match` を付け、意図した一致と避けたい一致を自己検証可能にする。
-- `bash -c`、`sh -c`、`zsh -lc`、heredoc、長い環境変数付きラッパーは汎用 rules に入れない。
-- 一時回避コマンド、個人環境依存コマンド、特定プロジェクト専用コマンドは汎用 rules に入れない。
-- 新しい言語別 rules を追加する場合は `<language>.rules` という命名にする。
+## 構成ルール
+- `default.rules` は言語非依存の共通コア専用に保つ。
+- 言語依存コマンドは `node.rules`、`ruby.rules` のような別の `*.rules` に分ける。
+- 一時回避コマンド、個人環境依存コマンド、長い shell wrapper は汎用 rules に入れない。
 
-## 推奨ツールの扱い
-- 推奨ツールは、まずローカルに存在するか確認してから使う。
-- 推奨ツールが無ければ、まず標準コマンドへフォールバックして作業を継続する。
-- フォールバックで十分なら導入提案しない。
-- フォールバックでは作業効率または精度が大きく落ちる場合だけ、`README.md` の導入手順を参照して導入提案してよい。
-- package manager 実行や system package の導入は、エージェントが勝手に始めない。
-- ユーザーが一括導入を望む場合は、`README.md` の環境別ワンライナーを案内する。
+## 記述ルール
+- 各 `prefix_rule` には `match` と `not_match` を付ける。
+- 前方一致で広がりすぎるコマンドは、引数まで含めて限定する。
+- 危険操作は `allow` にせず、`prompt` か未マッチに寄せる。
+- `bash -c`、`sh -c`、`zsh -lc`、長い環境変数付きラッパーは汎用 rules に入れない。
 
-## 推奨ツールの具体例
-- `rg`
-  - 存在確認: `command -v rg`
-  - フォールバック: `git grep`、必要なら `grep`
-- `fd`
-  - 存在確認: `command -v fd`
-  - フォールバック: `find`
-- `jq`
-  - 存在確認: `command -v jq`
-  - フォールバック: 生 JSON の確認、必要最小限の別手段
-- `bat`
-  - 存在確認: `command -v bat`
-  - フォールバック: `cat`、`sed -n`、`head`、`tail`
-- `delta`
-  - 存在確認: `command -v delta`
-  - フォールバック: `git diff`
-
-## CLI 優先原則
-- 探索、集計、比較、整形は、可能な限り CLI の確定出力を優先して取得する。
-- エージェントは、CLI 出力の要約、比較、判断、次のアクション決定を担う。
-- 記事や記憶だけで推測せず、まずローカルコマンドや Git 情報で確認できる事実を取る。
-
-## 変更時の検証
-- rules を追加・変更したら、`codex execpolicy check --pretty --rules <file> -- <command>` で許可例と要確認例を確認する。
-- 少なくとも `match` に書いた代表例と、`not_match` に書いた代表例は確認する。
-- 変更後は `git diff` を見て、汎用 rules に個別プロジェクト専用コマンドが紛れ込んでいないかを確認する。
+## 確認ルール
+- 変更後は `codex execpolicy check --pretty --rules <file> -- <command>` で境界を確認する。
+- 許可例だけでなく、非許可にしたい代表例も確認する。
+- `git diff` を見て、意図しない広い許可が入っていないか確認する。

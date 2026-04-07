@@ -8,7 +8,31 @@ Codex CLI の execution policy rules を置くリポジトリです。
 - `node.rules`: Node.js 系の頻出コマンド
 - `ruby.rules`: Ruby / Bundler 系の頻出コマンド
 
-`AGENTS.md` は、この許可リストをどう設計・運用するかの補助文書です。ここでは Codex 用 allowlist の役割と、推奨ツールの導入手順を管理します。
+このリポジトリの `AGENTS.md` は編集用です。通常利用時に Codex へ読ませたいフォールバック方針は、下のテンプレートを `~/.codex/AGENTS.md` に追記して使います。
+
+## `~/.codex/AGENTS.md` への追記例
+
+普段使いで Codex にフォールバック方針を読ませたい場合は、`~/.codex/AGENTS.md` に次のような節を追記します。
+
+```md
+## CLI フォールバック方針
+- リポジトリ検索は `rg` を優先する。
+  - 例: `rg <pattern>`, `rg -n <pattern> .`, `rg --files`
+  - `rg` が無ければ `git grep <pattern>`、必要なら `grep -R <pattern> .`
+- ファイル探索は `fd` を優先する。
+  - 例: `fd <name>`, `fd -t f <pattern>`
+  - `fd` が無ければ `find . -name '<name>'`
+- JSON の整形や抽出は `jq` を優先する。
+  - 例: `jq . file.json`, `jq -r '<filter>' file.json`
+  - `jq` が無ければ生 JSON を確認し、必要最小限の別手段で代替する。
+- ファイル閲覧は `bat` を優先する。
+  - 例: `bat <file>`
+  - `bat` が無ければ `sed -n '1,120p' <file>`、`cat <file>`、`head`、`tail`
+- 差分確認はまず `git diff` を使う。
+  - 例: `git diff -- <path>`, `git diff --stat`
+  - `delta` が使える環境では、`git diff` の見やすい表示に使ってよい。
+  - `delta` が無ければ通常の `git diff` をそのまま使う。
+```
 
 ## 一括導入
 
@@ -67,5 +91,5 @@ sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
 
 ## 運用メモ
 - 推奨ツールが無くても、まず標準コマンドで継続可能かを確認してください。
-- 導入提案が必要な場合は、`AGENTS.md` の方針に従い、この README の手順を参照してください。
+- 導入提案が必要な場合は、この README の手順と上の `~/.codex/AGENTS.md` テンプレートを使って運用してください。
 - 今回は基礎ツールを優先し、より高度な専用ツールは将来の拡張候補として扱います。
