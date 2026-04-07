@@ -8,6 +8,22 @@ Codex / CLI 系エージェント向けの再利用可能な rules 集約リポ�
 
 詳細な運用方針は `AGENTS.md` を参照してください。ここでは推奨ツールの導入手順を管理します。
 
+## 一括導入
+
+macOS(Homebrew):
+
+```bash
+brew install ripgrep fd jq bat git-delta
+```
+
+Debian/Ubuntu(apt):
+
+```bash
+sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
+```
+
+どちらのワンライナーも `rg`、`fd`、`jq`、`bat`、`delta` を一括導入します。個別に入れたい場合は下の手順を使ってください。
+
 ## 推奨ツール
 
 ### rg
