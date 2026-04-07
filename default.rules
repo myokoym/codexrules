@@ -53,19 +53,35 @@ prefix_rule(
 
 # ============================================================
 # File discovery
-# OS 差を考慮して fd / find / ls をまとめる
+# OS 差を考慮して fd / ls をまとめる
 # ============================================================
 prefix_rule(
-    pattern=[["fd", "find", "ls"]],
+    pattern=[["fd", "ls"]],
     decision="allow",
     match=[
         "fd default.rules",
-        "find . -name package.json",
         "ls",
         "ls -la",
     ],
     not_match=[
         "rm -rf .",
+    ],
+)
+
+# ============================================================
+# File discovery with find
+# find は破壊的オプションを含めやすいので個別確認にする
+# ============================================================
+prefix_rule(
+    pattern=["find"],
+    decision="prompt",
+    match=[
+        "find . -name package.json",
+        "find . -type f",
+    ],
+    not_match=[
+        "fd default.rules",
+        "ls -la",
     ],
 )
 

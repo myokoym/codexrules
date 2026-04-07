@@ -20,7 +20,7 @@ prefix_rule(
 # プロジェクト定義済みスクリプト実行
 # ============================================================
 prefix_rule(
-    pattern=["npm", "run"],
+    pattern=["npm", "run", ["test", "lint", "build"]],
     decision="allow",
     match=[
         "npm run test",
