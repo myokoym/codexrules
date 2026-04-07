@@ -1,12 +1,14 @@
 # rules
 
-Codex / CLI 系エージェント向けの再利用可能な rules 集約リポジトリです。
+Codex CLI の execution policy rules を置くリポジトリです。
+
+このリポジトリの `*.rules` は、一般的なエージェント向けの行動指示ファイルではありません。`prefix_rule(...)` で「どのコマンドを `allow` / `prompt` するか」を定義する、Codex 用の許可リストです。
 
 - `default.rules`: 言語非依存の共通コア
 - `node.rules`: Node.js 系の頻出コマンド
 - `ruby.rules`: Ruby / Bundler 系の頻出コマンド
 
-詳細な運用方針は `AGENTS.md` を参照してください。ここでは推奨ツールの導入手順を管理します。
+`AGENTS.md` は、この許可リストをどう設計・運用するかの補助文書です。ここでは Codex 用 allowlist の役割と、推奨ツールの導入手順を管理します。
 
 ## 一括導入
 
