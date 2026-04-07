@@ -1,18 +1,139 @@
-prefix_rule(pattern=["npm", "install"], decision="allow")
-prefix_rule(pattern=["npx", "playwright"], decision="allow")
-prefix_rule(pattern=["npm", "run"], decision="allow")
-prefix_rule(pattern=["./scripts/verify.sh"], decision="allow")
-prefix_rule(pattern=["git", "add"], decision="allow")
-prefix_rule(pattern=["git", "commit"], decision="allow")
-prefix_rule(pattern=["/usr/bin/zsh", "-lc", "HOME=/tmp/aozora-home BUNDLE_APP_CONFIG=.bundle BUNDLE_PATH=vendor/bundle BUNDLE_DISABLE_SHARED_GEMS=true BUNDLE_USER_HOME=/tmp/aozora-bundle BUNDLE_USER_CONFIG=/tmp/aozora-bundle/config BUNDLE_USER_CACHE=/tmp/aozora-bundle/cache ruby -e 'require \"bundler\"; require \"bundler/cli\"; Bundler::CLI.start([\"install\"])'"], decision="allow")
-prefix_rule(pattern=["apt-get", "update"], decision="allow")
-prefix_rule(pattern=["sudo", "apt-get", "update"], decision="allow")
-prefix_rule(pattern=["ruby", "-e", "require \"bundler\"; require \"bundler/cli\"; Bundler::CLI.start([\"update\",\"nokogiri\"])"], decision="allow")
-prefix_rule(pattern=["/usr/bin/zsh", "-lc", "HOME=/tmp/aozora-home BUNDLE_APP_CONFIG=.bundle BUNDLE_PATH=vendor/bundle BUNDLE_DISABLE_SHARED_GEMS=true BUNDLE_USER_HOME=/tmp/aozora-bundle BUNDLE_USER_CONFIG=/tmp/aozora-bundle/config BUNDLE_USER_CACHE=/tmp/aozora-bundle/cache ruby -e 'require \"bundler\"; require \"bundler/cli\"; Bundler::CLI.start([\"update\",\"nokogiri\"])'"], decision="allow")
-prefix_rule(pattern=["/usr/bin/zsh", "-lc", "HOME=/tmp/aozora-home BUNDLE_APP_CONFIG=.bundle BUNDLE_PATH=vendor/bundle BUNDLE_DISABLE_SHARED_GEMS=true BUNDLE_USER_HOME=/tmp/aozora-bundle BUNDLE_USER_CONFIG=/tmp/aozora-bundle/config BUNDLE_USER_CACHE=/tmp/aozora-bundle/cache ruby -e 'require \"bundler\"; require \"bundler/cli\"; Bundler::CLI.start([\"lock\",\"--update\",\"nokogiri\"])'"], decision="allow")
-prefix_rule(pattern=["bundle", "install"], decision="allow")
-prefix_rule(pattern=["bundle", "exec", "ruby"], decision="allow")
-prefix_rule(pattern=["curl", "-I"], decision="allow")
-prefix_rule(pattern=["ss", "-ltnp"], decision="allow")
-prefix_rule(pattern=["bundle", "exec", "bundler-audit"], decision="allow")
-prefix_rule(pattern=["bundle", "update"], decision="allow")
+# ============================================================
+# Read-only Git inspection
+# 調査時に高頻度で使う Git の読み取り系だけをまとめて許可
+# ============================================================
+prefix_rule(
+    pattern=["git", ["status", "diff", "log", "show", "rev-parse", "grep"]],
+    decision="allow",
+    match=[
+        "git status",
+        "git diff",
+        "git diff --stat",
+        "git log --oneline",
+        "git show HEAD",
+        "git rev-parse --show-toplevel",
+        "git grep prefix_rule",
+    ],
+    not_match=[
+        "git commit -m test",
+        "git push origin main",
+        "git reset --hard",
+    ],
+)
+
+prefix_rule(
+    pattern=["git", "branch", "--show-current"],
+    decision="allow",
+    match=[
+        "git branch --show-current",
+    ],
+    not_match=[
+        "git branch -d feature/foo",
+        "git branch -D feature/foo",
+        "git branch -m old new",
+    ],
+)
+
+# ============================================================
+# Fast code / text search
+# 検索は rg を標準にする
+# ============================================================
+prefix_rule(
+    pattern=["rg"],
+    decision="allow",
+    match=[
+        "rg TODO",
+        "rg -n prefix_rule .",
+        "rg --files",
+    ],
+    not_match=[
+        "grep TODO .",
+    ],
+)
+
+# ============================================================
+# File discovery
+# OS 差を考慮して fd / find / ls をまとめる
+# ============================================================
+prefix_rule(
+    pattern=[["fd", "find", "ls"]],
+    decision="allow",
+    match=[
+        "fd default.rules",
+        "find . -name package.json",
+        "ls",
+        "ls -la",
+    ],
+    not_match=[
+        "rm -rf .",
+    ],
+)
+
+# ============================================================
+# File content read
+# 単純な読み取り系のみ
+# ============================================================
+prefix_rule(
+    pattern=[["cat", "head", "tail"]],
+    decision="allow",
+    match=[
+        "cat README.md",
+        "head -n 20 package.json",
+        "tail -n 50 log.txt",
+    ],
+    not_match=[
+        "rm README.md",
+    ],
+)
+
+# ============================================================
+# File content read with sed -n
+# sed は表示専用オプションに限定
+# ============================================================
+prefix_rule(
+    pattern=["sed", "-n"],
+    decision="allow",
+    match=[
+        "sed -n 1,80p default.rules",
+        "sed -n 10,20p README.md",
+    ],
+    not_match=[
+        "sed -i s/foo/bar/g app.js",
+    ],
+)
+
+# ============================================================
+# High-risk Git operations
+# 破壊・送信・履歴編集系は個別確認を残す
+# ============================================================
+prefix_rule(
+    pattern=["git", ["push", "commit", "reset", "rebase", "clean"]],
+    decision="prompt",
+    match=[
+        "git push origin main",
+        "git commit -m test",
+        "git reset --hard HEAD~1",
+        "git rebase main",
+        "git clean -fd",
+    ],
+    not_match=[
+        "git diff",
+        "git status",
+    ],
+)
+
+# ============================================================
+# Dangerous remove
+# rm は常に個別確認にする
+# ============================================================
+prefix_rule(
+    pattern=["rm"],
+    decision="prompt",
+    match=[
+        "rm foo.txt",
+        "rm -rf tmp",
+    ],
+    not_match=[
+        "rg rm .",
+    ],
+)

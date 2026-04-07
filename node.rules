@@ -1,0 +1,50 @@
+# ============================================================
+# npm install
+# 依存導入は Node 系 rules で明示的に許可
+# ============================================================
+prefix_rule(
+    pattern=["npm", "install"],
+    decision="allow",
+    match=[
+        "npm install",
+        "npm install eslint",
+    ],
+    not_match=[
+        "npm publish",
+        "npm config set fund false",
+    ],
+)
+
+# ============================================================
+# npm run
+# プロジェクト定義済みスクリプト実行
+# ============================================================
+prefix_rule(
+    pattern=["npm", "run"],
+    decision="allow",
+    match=[
+        "npm run test",
+        "npm run lint",
+        "npm run build",
+    ],
+    not_match=[
+        "npm install",
+        "npm publish",
+    ],
+)
+
+# ============================================================
+# Playwright
+# ブラウザ検証の代表コマンド
+# ============================================================
+prefix_rule(
+    pattern=["npx", "playwright"],
+    decision="allow",
+    match=[
+        "npx playwright test",
+        "npx playwright show-report",
+    ],
+    not_match=[
+        "npx cowsay hello",
+    ],
+)

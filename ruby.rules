@@ -1,0 +1,63 @@
+# ============================================================
+# bundle install
+# ============================================================
+prefix_rule(
+    pattern=["bundle", "install"],
+    decision="allow",
+    match=[
+        "bundle install",
+        "bundle install --jobs 4",
+    ],
+    not_match=[
+        "bundle exec ruby -v",
+        "bundle exec bundler-audit",
+    ],
+)
+
+# ============================================================
+# bundle update
+# ============================================================
+prefix_rule(
+    pattern=["bundle", "update"],
+    decision="allow",
+    match=[
+        "bundle update",
+        "bundle update nokogiri",
+    ],
+    not_match=[
+        "bundle install",
+        "bundle exec ruby -v",
+    ],
+)
+
+# ============================================================
+# bundle exec ruby
+# ============================================================
+prefix_rule(
+    pattern=["bundle", "exec", "ruby"],
+    decision="allow",
+    match=[
+        "bundle exec ruby -v",
+        "bundle exec ruby script/example.rb",
+    ],
+    not_match=[
+        "bundle install",
+        "bundle exec bundler-audit",
+    ],
+)
+
+# ============================================================
+# bundle exec bundler-audit
+# ============================================================
+prefix_rule(
+    pattern=["bundle", "exec", "bundler-audit"],
+    decision="allow",
+    match=[
+        "bundle exec bundler-audit",
+        "bundle exec bundler-audit update",
+    ],
+    not_match=[
+        "bundle exec ruby -v",
+        "bundle update",
+    ],
+)
