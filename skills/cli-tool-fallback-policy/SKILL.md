@@ -1,6 +1,6 @@
 ---
 name: cli-tool-fallback-policy
-description: Directs terminal work to prefer rg, fd, jq, bat, and git diff (optionally delta) with explicit fallbacks when those tools are missing. Use when searching the repo, listing files, handling JSON, viewing files, or showing diffs from the shell.
+description: ターミナルでの作業において、rg、fd、jq、bat、git diff、delta を優先し、それらがない場合の代替手段を明示する。リポジトリ検索、ファイル一覧表示、JSON 操作、ファイル閲覧、差分表示の際に使う。
 ---
 
 # CLI ツール優先とフォールバック
@@ -16,7 +16,7 @@ description: Directs terminal work to prefer rg, fd, jq, bat, and git diff (opti
   - `jq` が無ければ生 JSON を確認し、必要最小限の別手段で代替する。
 - **ファイル閲覧**は `bat` を優先する。
   - 例: `bat <file>`
-  - `bat` が無ければ `batcat`、それも無ければ `sed -n '1,120p' <file>`、`cat <file>`、`head`、`tail`
+  - `bat` が無ければ `batcat`、それも無ければ `sed -n '1,80p' <file>`、`cat <file>`、`head`、`tail`
 - **差分**はまず `git diff` を使う。
   - 例: `git diff -- <path>`, `git diff --stat`
   - `delta` が使えるなら見やすい表示に使ってよい。
