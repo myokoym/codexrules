@@ -96,6 +96,6 @@ sudo apt-get update && sudo apt-get install -y ripgrep fd-find jq bat git-delta
 
 ## License
 
-このリポジトリの内容は、別途明記がない限り `CC0 1.0 Universal` (`CC0-1.0`) で提供します。
+このリポジトリの内容は、別途明記がない限り [`CC0 1.0 Universal`](LICENSE) ([`CC0-1.0`](https://creativecommons.org/publicdomain/zero/1.0/)) で提供します。
 
 将来、第三者由来のテキストやコード断片を追加する場合は、その部分の元ライセンス表示を保持し、必要ならこのリポジトリの `CC0` 対象外であることを明記してください。
